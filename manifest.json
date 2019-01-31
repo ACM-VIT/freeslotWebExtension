@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name":"Freeslot",
+    "version":"1.0",
+    "description":"Extract timetable",
+    "icons":{
+        "128":"ico.png",
+        "48":"ico.png",
+        "16":"ico.png"
+    },
+    "permissions":[
+        "tabs",
+        "https://vtop.vit.ac.in/*"
+    ],
+    "page_action":{
+        "default_icon":"ico.png",
+        "default_popup":"popup.html",
+        "default_title":"Extract timetable"
+    },
+    "background":{
+        "scripts":["event.js"],
+        "persistent":false
+    },
+    
+    "content_scripts":[
+        {
+            "matches":["https://vtop.vit.ac.in/*"],
+            "js":["jquery-3.3.1.min.js","content.js"]
+        }
+    ]
+}
