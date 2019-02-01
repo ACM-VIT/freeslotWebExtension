@@ -4,11 +4,12 @@ parseTT=function(dom){
     slots=[]
     for(i=64,k=0; i<dom.length;i+=step[(k++)%2]){
         z=[]
-        for(j=0;j<14;j++){
-            if(j!=6 && $(dom[i+j]).attr('bgcolor')=='#CCFF33')
-                z.push(j)
-            else if((j==3||j==9) && (k++)%2 && $(dom[i+j+1]).attr('bgcolor')=='#CCFF33')
-                z.push(j)   //extra slot
+        for(x=0,y=0;x<14;x++,y++){
+            if($(dom[i+x]).attr('bgcolor')=='#CCFF33')
+                z.push(y)
+            else if((x==3||x==10) && k%2 && $(dom[i+x+1]).attr('bgcolor')=='#CCFF33')
+                z.push(y)   //extra slot
+            if(x==4 || x==11) x++;
         }
         slots.push(z)
     }
@@ -31,46 +32,59 @@ parseDetails=function(dom){
     return({name,gender,phno,email,hostel})
 }
 
-unableToGetData=function(){
-    console.log('unable')
+sendData=function(data){
+    var encrypted = CryptoJS.AES.encrypt(data, "awasthishubh");
+    var decrypted = CryptoJS.AES.decrypt(encrypted, "awasthishubh");
+    console.log(encrypted,decrypted)
 }
 
-try{
-    reg=$('.VTopHeaderStyle')[2].innerHTML.slice(0,9)
-    $.ajax({
-        url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
-        type:'POST',
-        data: {
-            semesterSubId: 'VL2018195',
-            authorizedID: reg,
-            x:new Date().toGMTString()
-        }
-    }).done(function(data){
-        try{
-            step=[15,16]
-            dom=$('<output>').append($.parseHTML(data)).find('#timeTableStyle').find('td')
-            slots=parseTT(dom)
-            
-            $.ajax({
-                url:'https://vtop.vit.ac.in/vtop/studentsRecord/StudentProfileAllView',
-                type:'POST',
-                data: {
-                    verifyMenu: true,
-                    winImage: undefined,
-                    authorizedID: reg,
-                    nocache: '@(new Date().getTime())'
-                }
-            }).done(function(data){
-                try{
-                    details=parseDetails($('<output>').append($.parseHTML(data)))
-                    console.log({reg,...details,slots})
-                } catch(e){ unableToGetData()}
-            }).catch(e=>{
-                unableToGetData()
-            })
-        } catch(e){ unableToGetData()}
-    }).catch(e=>{
-        alert()
-        unableToGetData()
-    })
-} catch(e){ unableToGetData()}
+unableToGetData=function(){ // not connect or logged in but has tt
+    try{
+        sendData({slots:parseTT($('#timeTableStyle').find('td'))})
+    } catch(e){
+        console.log(err)
+        // error message
+    }
+}
+
+getData=function(){
+    try{
+        reg=$('.VTopHeaderStyle')[2].innerHTML.slice(0,9)
+        $.ajax({
+            url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
+            type:'POST',
+            data: {
+                semesterSubId: 'VL2018195',
+                authorizedID: reg,
+                x:new Date().toGMTString()
+            }
+        }).done(function(data){
+            try{
+                step=[15,16]
+                dom=$('<output>').append($.parseHTML(data)).find('#timeTableStyle').find('td')
+                slots=parseTT(dom)
+                
+                $.ajax({
+                    url:'https://vtop.vit.ac.in/vtop/studentsRecord/StudentProfileAllView',
+                    type:'POST',
+                    data: {
+                        verifyMenu: true,
+                        winImage: undefined,
+                        authorizedID: reg,
+                        nocache: '@(new Date().getTime())'
+                    }
+                }).done(function(data){
+                    try{
+                        details=parseDetails($('<output>').append($.parseHTML(data)))
+                        console.log({reg,...details,slots})
+                    } catch(e){ unableToGetData()}
+                }).catch(e=>{
+                    unableToGetData()
+                })
+            } catch(e){ unableToGetData()}
+        }).catch(e=>{
+            alert()
+            unableToGetData()
+        })
+    } catch(e){ unableToGetData()}
+}

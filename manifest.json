@@ -25,7 +25,7 @@
     "content_scripts":[
         {
             "matches":["https://vtop.vit.ac.in/*"],
-            "js":["jquery-3.3.1.min.js","content.js"]
+            "js":["jquery-3.3.1.min.js","aes.min.js","content.js"]
         }
     ]
 }
