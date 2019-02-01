@@ -8,6 +8,7 @@ chrome.runtime.onMessage.addListener(
     });
 
 parseTT=function(dom){
+    step=[15,16]
     slots=[]
     for(i=64,k=0; i<dom.length;i+=step[(k++)%2]){
         z=[]
@@ -40,9 +41,10 @@ parseDetails=function(dom){
 }
 
 sendData=function(data){
+    chrome.runtime.sendMessage({status:'sucess'})
     var encoded = window.btoa(JSON.stringify(data));
     var decoded = window.atob(encoded)
-    window.open('https://freeslot.acmvit.in/?data='+encoded,'freeslot')
+    window.open('https://freeslot.acmvit.in/?data='+encoded)
     console.log(JSON.parse(decoded))
     
 }
@@ -52,11 +54,12 @@ unableToGetData=function(){ // not connect or logged in but has tt
         sendData({slots:parseTT($('#timeTableStyle').find('td'))})
     } catch(e){
         console.log(e)
-        // error message
+        chrome.runtime.sendMessage({status:'failed'})
     }
 }
 
 getData=function(){
+    chrome.runtime.sendMessage({status:'loading'})
     try{
         reg=$('.VTopHeaderStyle')[2].innerHTML.slice(0,9)
         $.ajax({
@@ -86,7 +89,7 @@ getData=function(){
                     }
                 }).done(function(data){
                     try{
-                        step=[15,16]
+                        
                         dom=$('<output>').append($.parseHTML(data)).find('#timeTableStyle').find('td')
                         slots=parseTT(dom)
                         sendData({reg,...details,slots})

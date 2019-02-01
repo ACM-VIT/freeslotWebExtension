@@ -3,22 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freesloy</title>
-    <script src="popup.js"></script>
     <style>
-    .btn{
-        cursor: pointer;
-        background: rgb(0, 78, 195);
-        border: 0;
-        color: white;
-        width: 150px;
-        font-weight: 900;
-        font-size: 15;
-        height: 30;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
-    }
-    .btn:hover{
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
     body{
         margin:0;
         padding: 0px;
@@ -39,13 +24,20 @@
         font-size: 15;
         cursor: pointer;
         justify-content: center;
-        
     }
     body{
-        height: 250px;
+        height: 200px;
         width: 200px;
         display: flex;
         flex-direction: column; 
+    }
+    .btn-load{
+        background: rgb(105, 118, 136)!important;
+        cursor: not-allowed!important;
+        pointer-events: none;
+    }
+    .btn-err{
+        background: #e53935!important;
     }
     </style>
 </head>
@@ -54,11 +46,13 @@
     justify-content: center; text-align: center;">
         <h1 class="titleHome" style="margin:0px;font-weight: 900; font-size: 30px; margin-bottom: 0px;">FreeSlots</h1>
         <div class="despHome" style="font-size: 8px;">A simple application to manage your team.</div>
-        <!-- <div style="color:red">Unable to extract TimeTable</div><br><br> -->
         
-    <span id="errormsg" style="display:none;position: absolute; bottom:0; margin:0;padding:0;color:red; text-align: center">
+    <span id="errormsg" style="display:none;position: absolute; bottom:2px; margin:0;padding:0;color:red; text-align: center">
             Make sure you're logged in</span>
 </div>
     <div id="btn" class="flat-btn">Get TimeTable</div>
 </body>
+<script src="jquery-3.3.1.min.js"></script>
+<script src="popup.js"></script>
+
 </html>
