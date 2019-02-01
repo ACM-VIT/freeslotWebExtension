@@ -1,5 +1,12 @@
 chrome.runtime.sendMessage({todo:'activate'})
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if(request.getTT){
+            getData()
+        }
+    });
+
 parseTT=function(dom){
     slots=[]
     for(i=64,k=0; i<dom.length;i+=step[(k++)%2]){
@@ -33,16 +40,18 @@ parseDetails=function(dom){
 }
 
 sendData=function(data){
-    var encrypted = CryptoJS.AES.encrypt(data, "awasthishubh");
-    var decrypted = CryptoJS.AES.decrypt(encrypted, "awasthishubh");
-    console.log(encrypted,decrypted)
+    var encoded = window.btoa(JSON.stringify(data));
+    var decoded = window.atob(encoded)
+    window.open('https://freeslot.acmvit.in/?data='+encoded,'freeslot')
+    console.log(JSON.parse(decoded))
+    
 }
 
 unableToGetData=function(){ // not connect or logged in but has tt
     try{
         sendData({slots:parseTT($('#timeTableStyle').find('td'))})
     } catch(e){
-        console.log(err)
+        console.log(e)
         // error message
     }
 }
@@ -51,40 +60,46 @@ getData=function(){
     try{
         reg=$('.VTopHeaderStyle')[2].innerHTML.slice(0,9)
         $.ajax({
-            url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
+            url:'https://vtop.vit.ac.in/vtop/studentsRecord/StudentProfileAllView',
             type:'POST',
             data: {
-                semesterSubId: 'VL2018195',
+                verifyMenu: true,
+                winImage: undefined,
                 authorizedID: reg,
-                x:new Date().toGMTString()
+                nocache: '@(new Date().getTime())'
             }
         }).done(function(data){
             try{
-                step=[15,16]
-                dom=$('<output>').append($.parseHTML(data)).find('#timeTableStyle').find('td')
-                slots=parseTT(dom)
-                
+                details=parseDetails($('<output>').append($.parseHTML(data)))
+                if($('#timeTableStyle')[0])
+                    return sendData({
+                        slots:parseTT($('#timeTableStyle').find('td')),
+                        reg,...details
+                    })
                 $.ajax({
-                    url:'https://vtop.vit.ac.in/vtop/studentsRecord/StudentProfileAllView',
+                    url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
                     type:'POST',
                     data: {
-                        verifyMenu: true,
-                        winImage: undefined,
+                        semesterSubId: 'VL2018195',
                         authorizedID: reg,
-                        nocache: '@(new Date().getTime())'
+                        x:new Date().toGMTString()
                     }
                 }).done(function(data){
                     try{
-                        details=parseDetails($('<output>').append($.parseHTML(data)))
-                        console.log({reg,...details,slots})
+                        step=[15,16]
+                        dom=$('<output>').append($.parseHTML(data)).find('#timeTableStyle').find('td')
+                        slots=parseTT(dom)
+                        sendData({reg,...details,slots})
                     } catch(e){ unableToGetData()}
                 }).catch(e=>{
+                    alert()
                     unableToGetData()
                 })
             } catch(e){ unableToGetData()}
         }).catch(e=>{
-            alert()
             unableToGetData()
         })
+
+        
     } catch(e){ unableToGetData()}
 }
