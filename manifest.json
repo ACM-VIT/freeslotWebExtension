@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name":"Freeslot",
     "version":"1.0",
-    "description":"Extract timetable",
+    "description":"Freeslot",
     "icons":{
         "128":"ico.png",
         "48":"ico.png",
@@ -15,7 +15,7 @@
     "page_action":{
         "default_icon":"ico.png",
         "default_popup":"popup.html",
-        "default_title":"Extract timetable"
+        "default_title":"Freeslot"
     },
     "background":{
         "scripts":["event.js"],

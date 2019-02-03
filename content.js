@@ -3,7 +3,16 @@ chrome.runtime.sendMessage({todo:'activate'})
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if(request.getTT){
-            getData()
+            chrome.runtime.sendMessage({status:'loading'})
+            chrome.runtime.sendMessage({getSem: true}, function(response) {
+                if(response){
+                    getData(response)
+                }
+                else {
+                    console.log('using default sem')
+                    getData('VL2018195')
+                }
+            });
         }
     });
 
@@ -58,8 +67,8 @@ unableToGetData=function(){ // not connect or logged in but has tt
     }
 }
 
-getData=function(){
-    chrome.runtime.sendMessage({status:'loading'})
+getData=function(semisterID){
+    console.log(semisterID)
     try{
         reg=$('.VTopHeaderStyle')[2].innerHTML.slice(0,9)
         $.ajax({
@@ -83,7 +92,7 @@ getData=function(){
                     url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
                     type:'POST',
                     data: {
-                        semesterSubId: 'VL2018195',
+                        semesterSubId: semisterID,
                         authorizedID: reg,
                         x:new Date().toGMTString()
                     }
@@ -95,7 +104,6 @@ getData=function(){
                         sendData({reg,...details,slots})
                     } catch(e){ unableToGetData()}
                 }).catch(e=>{
-                    alert()
                     unableToGetData()
                 })
             } catch(e){ unableToGetData()}
