@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
     "name":"Freeslot",
-    "version":"1.0",
-    "description":"Freeslot",
+    "version":"1.1",
+    "description":"A chrome extension to extract timetable from vtop and use in http://freeslot.acmvit.in",
     "icons":{
         "128":"ico.png",
         "48":"ico.png",
