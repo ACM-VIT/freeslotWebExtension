@@ -11,7 +11,7 @@ function getSem(callback){
             if(callback) callback()
         }
     };
-    xhttp.open("GET", "https://api.github.com/repos/awasthishubh/freeslot-chromeExtension/contents/support/currentsem.txt", true);
+    xhttp.open("GET", "https://api.github.com/repos/ACM-VIT/freeslotWebExtension/contents/support/currentsem.txt?ref=master", true);
     xhttp.send();
 }
 getSem()

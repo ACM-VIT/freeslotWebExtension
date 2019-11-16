@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(
                 }
                 else {
                     console.log('using default sem')
-                    getData('VL2018195')
+                    getData('VL2019205')
                 }
             });
         }
@@ -92,7 +92,7 @@ getData=function(semisterID){
                     url:'https://vtop.vit.ac.in/vtop/processViewTimeTable',
                     type:'POST',
                     data: {
-                        semesterSubId: semisterID,
+                        semesterSubId: semisterID.trim(),
                         authorizedID: reg,
                         x:new Date().toGMTString()
                     }
